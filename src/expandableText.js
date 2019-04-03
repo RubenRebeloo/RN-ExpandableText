@@ -10,6 +10,7 @@ export default class ExpandableText extends React.Component {
       expanded: true,
       numberOfLines: null,
       showExpandView: false,
+      containerHeight: 0,
       expandText: 'Expand',
     }
     this.numberOfLines = props.numberOfLines
@@ -22,7 +23,7 @@ export default class ExpandableText extends React.Component {
     if (this.measureFlag) {
       if (this.state.expanded) {
         this.maxHeight = event.nativeEvent.layout.height
-        this.setState({ expanded: false, numberOfLines: this.numberOfLines })
+        this.setState({ expanded: false, numberOfLines: this.numberOfLines, containerHeight: 'auto' })
       } else {
         this.mixHeight = event.nativeEvent.layout.height
         if (this.mixHeight === this.maxHeight) {
@@ -52,6 +53,7 @@ export default class ExpandableText extends React.Component {
 
   render() {
     const { numberOfLines, expandTextStyle, ...rest } = this.props
+    console.tron.logImportant(this.state.expandText);
     let renderExpandView = <Text style={[this.props.style, styles.expandText, expandTextStyle]}>
       {this.state.expandText}
     </Text>
@@ -64,7 +66,7 @@ export default class ExpandableText extends React.Component {
     }
     renderExpandView = this.state.showExpandView ? renderExpandView : null
     return (
-      <View>
+      <View style={{height: this.state.containerHeight}}>
         <Text
           numberOfLines={this.state.numberOfLines}
           onLayout={this.onTextLayout.bind(this)}
@@ -72,7 +74,7 @@ export default class ExpandableText extends React.Component {
         >
           {this.props.children}
         </Text>
-        <TouchableOpacity onPress={this.onPressExpand.bind(this)}>
+        <TouchableOpacity style={{alignSelf: 'flex-end', bottom: this.state.expandText === 'Collapse' ? 20 : 0, backgroundColor: 'white'}} onPress={this.onPressExpand.bind(this)}>
           {renderExpandView}
         </TouchableOpacity>
       </View>
